@@ -22,7 +22,8 @@ TOKEN :
 }
 void mainNT () :
 {}
-{ expression() <EOL> }
+{ command () <EOL> }
+
 void expression () :
 {}
 { terme() (
@@ -42,4 +43,9 @@ void facteur () :
 { "(" expression() ")"
 | "-" facteur()
 | <NUMBER>
+}
+
+void command () :
+{}
+{ expression() ";"
 }
