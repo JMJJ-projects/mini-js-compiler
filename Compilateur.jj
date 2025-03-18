@@ -54,7 +54,7 @@ ExpressionA facteur () :
 ExpressionA e;}
 { "(" (e = expression()) ")" {return e;}
 | "-" (e=facteur()) {return (-e);}
-| t = <NUMBER> {}
+| t = <NUMBER> {return Integer.parseInt(t.image);}
 }
 
 
