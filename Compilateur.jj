@@ -1,17 +1,18 @@
 PARSER_BEGIN(Compilateur)
 import java.io.InputStream;
 public class Compilateur {
+
 public static void main(String args[]) {
 try {
 Compilateur parseur = new Compilateur(System.in);
-parseur.mainNT();
-System.out.println("C'est bien une expression arithmetique");
+ExpressionA i = parseur.mainNT();
+System.out.println(i);
 } catch (TokenMgrError e) {
 System.out.println("Ceci n'est pas une expression arithmetique");
 } catch (ParseException e) {
 System.out.println("Ceci n'est pas une expression arithmetique");
-}
-}
+} }
+
 }
 PARSER_END(Compilateur)
 SKIP :
@@ -21,33 +22,43 @@ TOKEN :
 | ["-", " "] ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
 | ["-", " "] "0" "." (["0"-"9"])*>
 | < EOL: "\n" >
+| <BOOLEAN: "True" | "False">
 }
-void mainNT () :
-{}
-{ command () <EOL> }
+ExpressionA mainNT () :
+{ExpressionA e;}
+{ (e=expression()) ";" {return e;}}
 
-void expression () :
-{}
+ExpressionA expression () :
+{ExpressionA res;
+ExpressionA e;}
 { terme() (
 "+" terme()
 | "-" terme()
 )*
 }
-void terme () :
-{}
-{ facteur() (
-"*" facteur()
-| "/" facteur()
-)*
+
+ExpressionA terme () :
+{ ExpressionA res;
+ExpressionA e;
 }
-void facteur () :
-{}
-{ "(" expression() ")"
-| "-" facteur()
-| <NUMBER>
+{
+e=facteur() {res = e;}
+( "*" (e=facteur()) {res = new Mult (res,e);}
+)* {return res;}
 }
 
-void command () :
-{}
-{ expression() ";"
+
+ExpressionA facteur () :
+{ Token t;
+ExpressionA e;}
+{ "(" (e = expression()) ")" {return e;}
+| "-" (e=facteur()) {return (-e);}
+| t = <NUMBER> {}
+}
+
+
+ExpressionA command () :
+{
+ExpressionA e;}
+{ (e = expression()) ";" {return e;}
 }
