@@ -32,8 +32,9 @@ ExpressionA expression () :
 {ExpressionA res;
 ExpressionA e;}
 { terme() (
-"+" terme()
-| "-" terme()
+"+" (e=terme()) {res = res + e;}
+| "-" (e = terme()) {res = res - e;}
+| "/" (e = terme()) {res = res / e;}
 )*
 }
 
