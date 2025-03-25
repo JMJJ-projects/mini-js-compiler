@@ -2,14 +2,14 @@ PARSER_BEGIN(Compilateur)
 import java.io.InputStream;
 public class Compilateur {
 	public static void main(String args[]) {
-		try {
-			Compilateur parseur = new Compilateur(System.in);
-			float i = parseur.mainNT();
-			System.out.println(i);
-			} catch (TokenMgrError e) {
-			System.out.println("Ceci n'est pas une expression arithmetique");
-			} catch (ParseException e) {
-			System.out.println("Ceci n'est pas une expression arithmetique");
+	try {
+		Compilateur parseur = new Compilateur(System.in);
+		ExpressionA i = parseur.mainNT();
+		System.out.println(i);
+		} catch (TokenMgrError e) {
+		System.out.println("Ceci n'est pas une expression arithmetique");
+		} catch (ParseException e) {
+		System.out.println("Ceci n'est pas une expression arithmetique");
 		}
 	}
 }
@@ -19,49 +19,47 @@ SKIP :
 	{ " " | "\t" }
 TOKEN :
 	{ < NUMBER: ["1"-"9"] (["0"-"9"])* >
-	| < EOL: "\r\n" >
-	| < COMMAND: ";" >
 	}
-float mainNT () :
+ExpressionA mainNT () :
 	{
-		float e;
+		ExpressionA e;
 	}
 	{
 		(e=expression()) ";" {return e;}
 	}
 
-float expression () :
+ExpressionA expression () :
 	{
-	  	float res;
-		float e;
+	  	ExpressionA res;
+		ExpressionA e;
 	}
 	{
 	  	e = terme() { res = e; }
-		( "+" terme() {res = res + e;}
-		| "-" terme() {res = res - e;}
-		| "/" terme() {res = res / e;}
+		( "+" (e=terme()) {res = new Plus (res, e);}
+		| "-" (e=terme()) {res = new Moins(res, e);}
 		)*
 		{return res;}
 	}
 
-float terme () :
+ExpressionA terme () :
 	{
-		float res;
-		float e;
+		ExpressionA res;
+		ExpressionA e;
 	}
 	{
 		e=facteur() {res = e;}
-		( "*" (e=facteur()) {res = res * e;}
+		( "*" (e=facteur()) {res = new Mult(res, e);}
 		)* {return res;}
 	}
 
-float facteur () :
+ExpressionA facteur () :
 	{
-		float e;
+		ExpressionA e;
 		Token t;
 	}
 	{
 		"(" (e=expression()) ")" {return e;}
-		| "-" (e=facteur()) {return -e;}
-		| t=<NUMBER> {return Integer.parseInt(t.image);}
+		| "-" (e=facteur()) {return new Neg(e);}
+		| t=<NUMBER> {return new Num(Integer.parseInt(t.image));}
 	}
+
