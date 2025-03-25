@@ -23,32 +23,45 @@ TOKEN :
 	| < COMMAND: ";" >
 	}
 float mainNT () :
-	{float e;}
-	{ (e=expression()) ";" {return e;}}
-float expression () :
-	{}
-	{ terme() (
-	"+" terme()
-	| "-" terme()
-	| "/" terme()
-	| "." terme()
-	)*
+	{
+		float e;
 	}
+	{
+		(e=expression()) ";" {return e;}
+	}
+
+float expression () :
+	{
+	  	float res;
+		float e;
+	}
+	{
+	  	e = terme() { res = e; }
+		( "+" terme() {res = res + e;}
+		| "-" terme() {res = res - e;}
+		| "/" terme() {res = res / e;}
+		)*
+		{return res;}
+	}
+
 float terme () :
-	{ float res;
-	float e;
+	{
+		float res;
+		float e;
 	}
 	{
 		e=facteur() {res = e;}
 		( "*" (e=facteur()) {res = res * e;}
 		)* {return res;}
 	}
+
 float facteur () :
-	{ float e;
-	Token t;
+	{
+		float e;
+		Token t;
 	}
 	{
-	"(" (e=expression()) ")" {return e;}
-	| "-" (e=facteur()) {return -e;}
-	| t=<NUMBER> {return Integer.parseInt(t.image);}
+		"(" (e=expression()) ")" {return e;}
+		| "-" (e=facteur()) {return -e;}
+		| t=<NUMBER> {return Integer.parseInt(t.image);}
 	}
