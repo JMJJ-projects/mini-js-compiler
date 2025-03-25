@@ -30,6 +30,7 @@ void expression () :
 { terme() (
 "+" terme()
 | "-" terme()
+| "." terme()
 )*
 }
 void terme () :
