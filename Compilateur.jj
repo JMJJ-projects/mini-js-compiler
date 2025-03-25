@@ -20,6 +20,7 @@ SKIP :
 TOKEN :
 { < NUMBER: ["1"-"9"] (["0"-"9"])* >
 | < EOL: "\r\n" >
+| < COMMAND: ";" >
 }
 void mainNT () :
 {}
