@@ -1,51 +1,54 @@
 PARSER_BEGIN(Compilateur)
 import java.io.InputStream;
 public class Compilateur {
-public static void main(String args[]) {
-try {
-Compilateur parseur = new Compilateur(System.in);
-parseur.mainNT();
-System.out.println("C'est bien une expression arithmetique");
-} catch (TokenMgrError e) {
-System.out.println("Ceci n'est pas une expression arithmetique");
-} catch (ParseException e) {
-System.out.println("Ceci n'est pas une expression arithmetique");
-}
-}
+	public static void main(String args[]) {
+		try {
+			Compilateur parseur = new Compilateur(System.in);
+			float i = parseur.mainNT();
+			System.out.println(i);
+			} catch (TokenMgrError e) {
+			System.out.println("Ceci n'est pas une expression arithmetique");
+			} catch (ParseException e) {
+			System.out.println("Ceci n'est pas une expression arithmetique");
+		}
+	}
 }
 
 PARSER_END(Compilateur)
 SKIP :
-{ " " | "\t" }
+	{ " " | "\t" }
 TOKEN :
-{ < NUMBER: ["1"-"9"] (["0"-"9"])* >
-| < EOL: "\r\n" >
-| < COMMAND: ";" >
-}
-void mainNT () :
-{}
-{ expression() <EOL> }
-void expression () :
-{}
-{ terme() (
-"+" terme()
-| "-" terme()
-| "/" terme()
-| "." terme()
-)*
-}
-void terme () :
-{}
-{ facteur() (
-"*" facteur()
-| "/" facteur()
-)*
-}
-void facteur () :
-{}
-{ "(" expression() ")"
-| "-" facteur()
-| <NUMBER>
-}
-
-
+	{ < NUMBER: ["1"-"9"] (["0"-"9"])* >
+	| < EOL: "\r\n" >
+	| < COMMAND: ";" >
+	}
+float mainNT () :
+	{float e;}
+	{ (e=expression()) ";" {return e;}}
+float expression () :
+	{}
+	{ terme() (
+	"+" terme()
+	| "-" terme()
+	| "/" terme()
+	| "." terme()
+	)*
+	}
+float terme () :
+	{ float res;
+	float e;
+	}
+	{
+		e=facteur() {res = e;}
+		( "*" (e=facteur()) {res = res * e;}
+		)* {return res;}
+	}
+float facteur () :
+	{ float e;
+	Token t;
+	}
+	{
+	"(" (e=expression()) ")" {return e;}
+	| "-" (e=facteur()) {return -e;}
+	| t=<NUMBER> {return Integer.parseInt(t.image);}
+	}
