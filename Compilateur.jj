@@ -13,6 +13,7 @@ public class Compilateur {
 		}
 	}
 }
+
 PARSER_END(Compilateur)
 SKIP :
 	{ " " | "\t" }
