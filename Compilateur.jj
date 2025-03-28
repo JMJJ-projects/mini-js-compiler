@@ -62,4 +62,3 @@ ExpressionA facteur () :
 		| "-" (e=facteur()) {return new Neg(e);}
 		| t=<NUMBER> {return new Num(Integer.parseInt(t.image));}
 	}
-
