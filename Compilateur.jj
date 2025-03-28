@@ -13,22 +13,25 @@ System.out.println("Ceci n'est pas une expression arithmetique");
 }
 }
 }
+
 PARSER_END(Compilateur)
 SKIP :
 { " " | "\t" }
 TOKEN :
 { < NUMBER: ["1"-"9"] (["0"-"9"])* >
-| < EOL: "\n" >
+| < EOL: "\r\n" >
+| < COMMAND: ";" >
 }
 void mainNT () :
 {}
-{ command () <EOL> }
-
+{ expression() <EOL> }
 void expression () :
 {}
 { terme() (
 "+" terme()
 | "-" terme()
+| "/" terme()
+| "." terme()
 )*
 }
 void terme () :
@@ -43,9 +46,4 @@ void facteur () :
 { "(" expression() ")"
 | "-" facteur()
 | <NUMBER>
-}
-
-void command () :
-{}
-{ expression() ";"
 }
