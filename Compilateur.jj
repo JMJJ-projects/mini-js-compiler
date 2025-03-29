@@ -5,7 +5,8 @@ public class Compilateur {
 	try {
 		Compilateur parseur = new Compilateur(System.in);
 		ExpressionA i = parseur.mainNT();
-		System.out.println(i);
+		System.out.println(i.toAssembly());
+
 		} catch (TokenMgrError e) {
 		System.out.println("Ceci n'est pas une expression arithmetique");
 		} catch (ParseException e) {
