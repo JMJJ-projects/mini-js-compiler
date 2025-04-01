@@ -31,11 +31,10 @@ ExpressionA mainNT () :
 ExpressionA expression () :
 {ExpressionA res;
 ExpressionA e;}
-{ terme() (
-"+" (e=terme()) {res = res + e;}
-| "-" (e = terme()) {res = res - e;}
-| "/" (e = terme()) {res = res / e;}
-)*
+{ e = terme() {res = e;}
+( "+" (e=terme()) {res = new Plus(res, e);}
+| "-" (e = terme()) {res = new Moins(res, e);}
+)* {return res;}
 }
 
 ExpressionA terme () :
@@ -45,6 +44,7 @@ ExpressionA e;
 {
 e=facteur() {res = e;}
 ( "*" (e=facteur()) {res = new Mult (res,e);}
+  |"/" (e=facteur()) {res = new Divi (res,e);}
 )* {return res;}
 }
 
@@ -53,8 +53,8 @@ ExpressionA facteur () :
 { Token t;
 ExpressionA e;}
 { "(" (e = expression()) ")" {return e;}
-| "-" (e=facteur()) {return (-e);}
-| t = <NUMBER> {return Integer.parseInt(t.image);}
+| "-" (e=facteur()) {return new Neg(e);}
+| t = <NUMBER> {return new Num (Integer.parseInt(t.image));}
 }
 
 
