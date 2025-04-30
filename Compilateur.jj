@@ -18,19 +18,14 @@ PARSER_END(Compilateur)
 SKIP :
 	{ " " | "\t" }
 TOKEN :
-{ < NUMBER: ["1"-"9"] (["0"-"9"])* 
-| ["-", " "] ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
-| ["-", " "] "0" "." (["0"-"9"])*>
-| < EOL: "\n" >
-}
-
+	{ < NUMBER: ["1"-"9"] (["0"-"9"])* >
+	}
 ExpressionA mainNT () :
 	{
 		ExpressionA e;
 	}
 	{
-	  	command () <EOL>
-
+		(e=expression()) ";" {return e;}
 	}
 
 ExpressionA expression () :
@@ -67,9 +62,5 @@ ExpressionA facteur () :
 		| "-" (e=facteur()) {return new Neg(e);}
 		| t=<NUMBER> {return new Num(Integer.parseInt(t.image));}
 	}
-ExpressionA command () :
-	{}
-	{
-  		expression() ";"
-	}
+
 
