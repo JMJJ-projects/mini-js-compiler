@@ -1,65 +1,85 @@
 PARSER_BEGIN(Compilateur)
-import java.io.InputStream;
+import java.io.*;
 public class Compilateur {
-
-public static void main(String args[]) {
-try {
-Compilateur parseur = new Compilateur(System.in);
-ExpressionA i = parseur.mainNT();
-System.out.println(i);
-} catch (TokenMgrError e) {
-System.out.println("Ceci n'est pas une expression arithmetique");
-} catch (ParseException e) {
-System.out.println("Ceci n'est pas une expression arithmetique");
-} }
-
+    public static void main(String args[]) {
+        try {
+            if (args.length > 0) {
+                String inputFileName = args[0];
+                String outputFileName = inputFileName.substring(0, inputFileName.lastIndexOf('.')) + ".jsm";
+                Compilateur parseur = new Compilateur(new FileInputStream(inputFileName));
+                
+                ExpressionA i = parseur.mainNT();
+                
+                BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName));
+                writer.write(i.toAssembly());
+                writer.close();
+                System.out.println("Output: " + outputFileName);
+            } else {
+                Compilateur parseur = new Compilateur(System.in);
+				ExpressionA i = parseur.mainNT();
+				System.out.println(i.toAssembly());
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Input erreur");
+        } catch (IOException e) {
+            System.out.println("Erreur");
+        } catch (TokenMgrError e) {
+            System.out.println("Ceci n'est pas une expression arithmetique");
+        } catch (ParseException e) {
+            System.out.println("Ceci n'est pas une expression arithmetique");
+        }
+    }
 }
+
 PARSER_END(Compilateur)
 SKIP :
-{ " " | "\t" }
+	{ " " | "\t" }
 TOKEN :
 { < NUMBER: ["1"-"9"] (["0"-"9"])* 
 | ["-", " "] ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
 | ["-", " "] "0" "." (["0"-"9"])*>
-| < EOL: "\n" >
-| <BOOLEAN: "True" | "False">
 }
+
 ExpressionA mainNT () :
-{ExpressionA e;}
-{ (e=expression()) ";" {return e;}}
+	{
+		ExpressionA e;
+	}
+	{
+		(e=expression()) ";" { return e; }
+	}
 
 ExpressionA expression () :
-{ExpressionA res;
-ExpressionA e;}
-{ e = terme() {res = e;}
-( "+" (e=terme()) {res = new Plus(res, e);}
-| "-" (e = terme()) {res = new Moins(res, e);}
-)* {return res;}
-}
+	{
+	  	ExpressionA res;
+		ExpressionA e;
+	}
+	{
+	  	e = terme() { res = e; }
+		( "+" (e=terme()) {res = new Plus (res, e);}
+		| "-" (e=terme()) {res = new Moins(res, e);}
+		)*
+		{return res;}
+	}
 
 ExpressionA terme () :
-{ ExpressionA res;
-ExpressionA e;
-}
-{
-e=facteur() {res = e;}
-( "*" (e=facteur()) {res = new Mult (res,e);}
-  |"/" (e=facteur()) {res = new Divi (res,e);}
-)* {return res;}
-}
-
+	{
+		ExpressionA res;
+		ExpressionA e;
+	}
+	{
+		e=facteur() {res = e;}
+		( "*" (e=facteur()) {res = new Mult(res, e);}
+		)* {return res;}
+	}
 
 ExpressionA facteur () :
-{ Token t;
-ExpressionA e;}
-{ "(" (e = expression()) ")" {return e;}
-| "-" (e=facteur()) {return new Neg(e);}
-| t = <NUMBER> {return new Num (Integer.parseInt(t.image));}
-}
+	{
+		ExpressionA e;
+		Token t;
+	}
+	{
+		"(" (e=expression()) ")" {return e;}
+		| "-" (e=facteur()) {return new Neg(e);}
+		| t=<NUMBER> {return new Num(Integer.parseInt(t.image));}
+	}
 
-
-ExpressionA command () :
-{
-ExpressionA e;}
-{ (e = expression()) ";" {return e;}
-}
