@@ -18,14 +18,53 @@ PARSER_END(Compilateur)
 SKIP :
 	{ " " | "\t" }
 TOKEN :
-	{ < NUMBER: ["1"-"9"] (["0"-"9"])* >
+	{ < NUMBER: ["1"-"9"] (["0"-"9"])* 
+    	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
+   	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+ 
+    	 | ["1"-"9"] (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+>
+
+	  |<BOOLEAN: ("True" | "False")>
+	  |<EQ: "==">
+	  |<LOEQ: "<=">
+	  |<GREQ: ">=">
 	}
 ExpressionA mainNT () :
 	{
 		ExpressionA e;
 	}
 	{
-		(e=expression()) ";" {return e;}
+		(e=egalite()) ";" {return e;}
+	}
+	
+ExpressionA egalite () :
+	{
+	  	ExpressionA res;
+		ExpressionA e;
+	}
+	{
+	  	e = comparaison() { res = e; }
+		(
+		 "==" (e=comparaison()) {res = new Equal(res, e);}
+		
+		)*
+		{return res;}
+	}
+	
+ExpressionA comparaison () :
+	{
+	  	ExpressionA res;
+		ExpressionA e;
+	}
+	{
+	  	e = expression() { res = e; }
+		(
+		 "<=" (e=expression()) {res = new LoEq(res, e);}
+		| ">=" (e=expression()) {res = new GrEq(res, e);}
+		|"<" (e=expression()) {res = new LoSt(res, e);}
+		| ">" (e=expression()) {res = new GrSt(res, e);}
+		
+		)*
+		{return res;}
 	}
 
 ExpressionA expression () :
@@ -49,6 +88,7 @@ ExpressionA terme () :
 	{
 		e=facteur() {res = e;}
 		( "*" (e=facteur()) {res = new Mult(res, e);}
+		| "/" (e=facteur()) {res = new Divi(res, e);} 
 		)* {return res;}
 	}
 
@@ -60,7 +100,11 @@ ExpressionA facteur () :
 	{
 		"(" (e=expression()) ")" {return e;}
 		| "-" (e=facteur()) {return new Neg(e);}
+		| "!" (e=facteur()) {return new Neg(e);}
 		| t=<NUMBER> {return new Num(Integer.parseInt(t.image));}
 	}
+	
+
+
 
 
