@@ -19,6 +19,8 @@ SKIP :
 	{ " " | "\t" }
 TOKEN :
 	{ < NUMBER: ["1"-"9"] (["0"-"9"])* 
+	 |"0"
+	 |"0." (["0"-"9"])*
     	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
    	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+ 
     	 | ["1"-"9"] (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+>
@@ -104,9 +106,19 @@ ExpressionA facteur () :
 		| "!" (e=facteur()) {return new Not(e);}
 		| t = <TRUE> {return new Bool("True");}
 		| t = <FALSE> {return new Bool("False");}
-		| t=<NUMBER> {return new Num(Integer.parseInt(t.image));}
+		| t=<NUMBER> {	if (t.image.contains("e")) {
+				String[] parts = t.image.split("e");
+				double base = Double.parseDouble(parts[0]);
+				int exponent = Integer.parseInt(parts[1]);
+				return new Num (base * Math.pow(10, exponent));
+			} else {
+				if(t.image.contains(".")) {
+				return new Num(Double.parseDouble(t.image));
+				}
+				else {return new Num(Double.parseDouble(t.image));}
+			}}
+
 	}
-	
 
 
 
