@@ -13,12 +13,15 @@ public class Compilateur {
                 
                 BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName));
                 writer.write(i.toAssembly());
+                writer.write(" \n");
+                writer.write("Halt");
                 writer.close();
                 System.out.println("Output: " + outputFileName);
             } else {
                 Compilateur parseur = new Compilateur(System.in);
 				ExpressionA i = parseur.mainNT();
 				System.out.println(i.toAssembly());
+				System.out.println("Halt");
             }
         } catch (FileNotFoundException e) {
             System.out.println("Input erreur");
