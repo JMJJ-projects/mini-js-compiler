@@ -53,6 +53,7 @@ TOKEN :
 	  |<LOEQ: "<=">
 	  |<GREQ: ">=">
 	}
+
 ExpressionA mainNT () :
 	{
 		ExpressionA e;
@@ -139,7 +140,4 @@ ExpressionA facteur () :
 				}
 				else {return new Num(Double.parseDouble(t.image));}
 			}}
-
 	}
-
-
