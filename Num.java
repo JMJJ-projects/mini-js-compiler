@@ -1,12 +1,17 @@
 public class Num extends ExpressionA {
-  public int num;
+
+  public double num;
     
-  public Num(int num) {
+  public Num(double num) {
     this.num = num;
   }
   
   public String toString() {
-    return Integer.toString(num);
+  //Pour que 12.0 -> 12 dans le parseur
+  if(num == (int)num) {
+      return Integer.toString((int)num);
+  }
+    return Double.toString(num);
   }
 
 }

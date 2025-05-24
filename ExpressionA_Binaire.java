@@ -15,3 +15,4 @@ abstract class ExpressionA_Binaire extends ExpressionA {
     return String.format("%1$s(%2$s,%3$s)", symbole(), gauche.toString(), droite.toString());
   }
 }
+

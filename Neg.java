@@ -10,4 +10,4 @@ public String toString() {
   return String.format("neg(%1$s)", arg.toString());
 }
 
-}	
+}
