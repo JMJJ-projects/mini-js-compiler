@@ -9,6 +9,7 @@ public Neg(ExpressionA arg) {
 public String toString() {
   return String.format("neg(%1$s)", arg.toString());
 }
+
 @Override
 public String toAssembly() { return arg.toAssembly() + "\nNegaNb";}
 

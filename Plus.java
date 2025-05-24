@@ -6,6 +6,5 @@ public String symbole() {return "plus";};
 
 public String toAssembly() {return gauche.toAssembly() + "\n" + droite.toAssembly() + "\nAddiNb";}
 
-
 }
 

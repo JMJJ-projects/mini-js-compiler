@@ -1,6 +1,7 @@
 PARSER_BEGIN(Compilateur)
 import java.io.*;
 public class Compilateur {
+
     public static void main(String args[]) {
         try {
             if (args.length > 0) {
@@ -29,23 +30,63 @@ public class Compilateur {
             System.out.println("Ceci n'est pas une expression arithmetique");
         }
     }
+
 }
 
 PARSER_END(Compilateur)
 SKIP :
 	{ " " | "\t" }
 TOKEN :
-{ < NUMBER: ["1"-"9"] (["0"-"9"])* 
-| ["-", " "] ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
-| ["-", " "] "0" "." (["0"-"9"])*>
-}
+	{ < NUMBER: ["1"-"9"] (["0"-"9"])* 
+	 |"0"
+	 |"0." (["0"-"9"])*
+    	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
+   	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+ 
+    	 | ["1"-"9"] (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+>
 
+	  |<TRUE: "True">
+	  |<FALSE: "False">
+	  |<EQ: "==">
+	  |<LOEQ: "<=">
+	  |<GREQ: ">=">
+	}
 ExpressionA mainNT () :
 	{
 		ExpressionA e;
 	}
 	{
-		(e=expression()) ";" { return e; }
+		(e=egalite()) ";" {return e;}
+	}
+	
+ExpressionA egalite () :
+	{
+	  	ExpressionA res;
+		ExpressionA e;
+	}
+	{
+	  	e = comparaison() { res = e; }
+		(
+		 "==" (e=comparaison()) {res = new Equal(res, e);}
+		
+		)*
+		{return res;}
+	}
+	
+ExpressionA comparaison () :
+	{
+	  	ExpressionA res;
+		ExpressionA e;
+	}
+	{
+	  	e = expression() { res = e; }
+		(
+		 "<=" (e=expression()) {res = new LoEq(res, e);}
+		| ">=" (e=expression()) {res = new GrEq(res, e);}
+		|"<" (e=expression()) {res = new LoSt(res, e);}
+		| ">" (e=expression()) {res = new GrSt(res, e);}
+		
+		)*
+		{return res;}
 	}
 
 ExpressionA expression () :
@@ -69,6 +110,7 @@ ExpressionA terme () :
 	{
 		e=facteur() {res = e;}
 		( "*" (e=facteur()) {res = new Mult(res, e);}
+		| "/" (e=facteur()) {res = new Divi(res, e);} 
 		)* {return res;}
 	}
 
@@ -78,8 +120,23 @@ ExpressionA facteur () :
 		Token t;
 	}
 	{
-		"(" (e=expression()) ")" {return e;}
+		"(" (e=egalite()) ")" {return e;}
 		| "-" (e=facteur()) {return new Neg(e);}
-		| t=<NUMBER> {return new Num(Integer.parseInt(t.image));}
+		| "!" (e=facteur()) {return new Not(e);}
+		| t = <TRUE> {return new Bool("True");}
+		| t = <FALSE> {return new Bool("False");}
+		| t=<NUMBER> {	if (t.image.contains("e")) {
+				String[] parts = t.image.split("e");
+				double base = Double.parseDouble(parts[0]);
+				int exponent = Integer.parseInt(parts[1]);
+				return new Num (base * Math.pow(10, exponent));
+			} else {
+				if(t.image.contains(".")) {
+				return new Num(Double.parseDouble(t.image));
+				}
+				else {return new Num(Double.parseDouble(t.image));}
+			}}
+
 	}
+
 
