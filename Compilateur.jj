@@ -46,7 +46,7 @@ TOKEN :
     	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
    	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+ 
     	 | ["1"-"9"] (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+>
-
+	 | <NaN : "NaN">
 	  |<TRUE: "True">
 	  |<FALSE: "False">
 	  |<EQ: "==">
@@ -92,6 +92,7 @@ ExpressionA comparaison () :
 		)*
 		{return res;}
 	}
+
 
 ExpressionA expression () :
 	{
@@ -140,4 +141,5 @@ ExpressionA facteur () :
 				}
 				else {return new Num(Double.parseDouble(t.image));}
 			}}
+		|t=<NaN> {return new Num("NaN");}
 	}

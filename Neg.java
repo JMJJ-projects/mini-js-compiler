@@ -13,6 +13,4 @@ public String toString() {
 @Override
 public String toAssembly() { return arg.toAssembly() + "\nNegaNb";}
 
-
-}	
-
+}

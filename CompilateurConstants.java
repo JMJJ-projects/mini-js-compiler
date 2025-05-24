@@ -11,15 +11,17 @@ public interface CompilateurConstants {
   /** RegularExpression Id. */
   int NUMBER = 3;
   /** RegularExpression Id. */
-  int TRUE = 4;
+  int NaN = 4;
   /** RegularExpression Id. */
-  int FALSE = 5;
+  int TRUE = 5;
   /** RegularExpression Id. */
-  int EQ = 6;
+  int FALSE = 6;
   /** RegularExpression Id. */
-  int LOEQ = 7;
+  int EQ = 7;
   /** RegularExpression Id. */
-  int GREQ = 8;
+  int LOEQ = 8;
+  /** RegularExpression Id. */
+  int GREQ = 9;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -30,6 +32,7 @@ public interface CompilateurConstants {
     "\" \"",
     "\"\\t\"",
     "<NUMBER>",
+    "\"NaN\"",
     "\"True\"",
     "\"False\"",
     "\"==\"",
