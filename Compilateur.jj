@@ -65,6 +65,7 @@ TOKEN :
 	  |<ELSE: "else">
 	  |<DO: "do" >
 	  |<WHILE: "while" >
+	  |<AFFECTATION: "=">
 	  |<IDENT : (["a"-"z", "A"-"Z", "_"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])*>
 	}
 
@@ -88,6 +89,7 @@ ExpressionA command () :
 {
 	<IF> "(" e=logique() ")" thenCmd=block() <ELSE> elseCmd=block() { return new IfElse(e, thenCmd, elseCmd); }
     	|<DO> body=block() <WHILE> "(" cond=logique() ")" ";" { return new DoWhile(body, cond); }
+	| LOOKAHEAD(2) t=<IDENT> <AFFECTATION> e=logique() ";" {return new SetVar(t.image, e);}
 	| e=logique() ";" { return e; }
 	| ";" { return new Empty(); }
 	|<IMPORT> t = <IDENT> {return new Import(t.image);}
@@ -104,6 +106,15 @@ ExpressionA block() :
   | (e=command()) { exprs.add(e); } { return e; }
 }
 
+ExpressionA affectation() :
+{
+    ExpressionA e;
+    Token t;
+}
+{
+    LOOKAHEAD(2) t=<IDENT> <AFFECTATION> e=logique() {return new SetVar(t.image, e);}
+    |e=logique() {return e;}
+}
 
 ExpressionA logique() :
 {
@@ -179,7 +190,7 @@ ExpressionA facteur () :
 		Token t;
 	}
 	{
-		"(" (e=egalite()) ")" {return e;}
+		"(" (e=affectation()) ")" {return e;}
 		| "-" (e=facteur()) {return new Neg(e);}
 		| "!" (e=facteur()) {return new Not(e);}
 		| t = <TRUE> {return new Bool("True");}

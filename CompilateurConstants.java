@@ -39,7 +39,9 @@ public interface CompilateurConstants {
   /** RegularExpression Id. */
   int WHILE = 19;
   /** RegularExpression Id. */
-  int IDENT = 20;
+  int AFFECTATION = 20;
+  /** RegularExpression Id. */
+  int IDENT = 21;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -66,6 +68,7 @@ public interface CompilateurConstants {
     "\"else\"",
     "\"do\"",
     "\"while\"",
+    "\"=\"",
     "<IDENT>",
     "\"\\n\"",
     "\"(\"",
