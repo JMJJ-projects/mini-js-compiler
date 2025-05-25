@@ -9,19 +9,27 @@ public interface CompilateurConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int NUMBER = 3;
+  int COMMENT = 6;
   /** RegularExpression Id. */
-  int NaN = 4;
+  int COMMENTMULT = 7;
   /** RegularExpression Id. */
-  int TRUE = 5;
+  int NUMBER = 8;
   /** RegularExpression Id. */
-  int FALSE = 6;
+  int NaN = 9;
   /** RegularExpression Id. */
-  int EQ = 7;
+  int TRUE = 10;
   /** RegularExpression Id. */
-  int LOEQ = 8;
+  int FALSE = 11;
   /** RegularExpression Id. */
-  int GREQ = 9;
+  int EQ = 12;
+  /** RegularExpression Id. */
+  int LOEQ = 13;
+  /** RegularExpression Id. */
+  int GREQ = 14;
+  /** RegularExpression Id. */
+  int IMPORT = 15;
+  /** RegularExpression Id. */
+  int IDENT = 16;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -31,6 +39,11 @@ public interface CompilateurConstants {
     "<EOF>",
     "\" \"",
     "\"\\t\"",
+    "\"\\n\"",
+    "\"\\r\"",
+    "\"\\r\\n\"",
+    "<COMMENT>",
+    "<COMMENTMULT>",
     "<NUMBER>",
     "\"NaN\"",
     "\"True\"",
@@ -38,6 +51,8 @@ public interface CompilateurConstants {
     "\"==\"",
     "\"<=\"",
     "\">=\"",
+    "\"import\"",
+    "<IDENT>",
     "\";\"",
     "\"<\"",
     "\">\"",

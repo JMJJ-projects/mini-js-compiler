@@ -1,5 +1,7 @@
 PARSER_BEGIN(Compilateur)
 import java.io.*;
+import java.io.InputStream;
+import java.util.ArrayList;
 public class Compilateur {
 
     public static void main(String args[]) {
@@ -38,7 +40,12 @@ public class Compilateur {
 
 PARSER_END(Compilateur)
 SKIP :
-	{ " " | "\t" }
+{
+    " " | "\t" | "\n" | "\r" | "\r\n"
+|<COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")>
+|<COMMENTMULT: "/*" (~["*"] | (("*")+ ~["/"]))* ("*")+ "/" >
+}
+
 TOKEN :
 	{ < NUMBER: ["1"-"9"] (["0"-"9"])* 
 	 |"0"
@@ -52,14 +59,18 @@ TOKEN :
 	  |<EQ: "==">
 	  |<LOEQ: "<=">
 	  |<GREQ: ">=">
+	  |<IMPORT: "import">
+	  |<IDENT : (["a"-"z", "A"-"Z", "_"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])*>
 	}
 
 ExpressionA mainNT () :
 	{
 		ExpressionA e;
+		Token t;
 	}
 	{
-		(e=egalite()) ";" {return e;}
+		    (e=egalite()) ";" {return e;}
+		    | <IMPORT> t = <IDENT> {return new Import(t.image);}
 	}
 	
 ExpressionA egalite () :
@@ -142,4 +153,5 @@ ExpressionA facteur () :
 				else {return new Num(Double.parseDouble(t.image));}
 			}}
 		|t=<NaN> {return new Num("NaN");}
+		|t=<IDENT> {return new Identifiant(t.image);}
 	}
