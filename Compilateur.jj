@@ -152,4 +152,5 @@ ExpressionA facteur () :
 				}
 				else {return new Num(Double.parseDouble(t.image));}
 			}}
+		|t=<NaN> {return new Num("NaN");}
 	}

@@ -3,4 +3,3 @@ public abstract class AST {
 	public int getTaille() {return taille;}
 
 }
-

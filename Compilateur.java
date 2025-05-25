@@ -37,7 +37,7 @@ public class Compilateur implements CompilateurConstants {
 
   static final public ExpressionA mainNT() throws ParseException {ExpressionA e;
     e = egalite();
-    jj_consume_token(9);
+    jj_consume_token(10);
 {if ("" != null) return e;}
     throw new Error("Missing return statement in function");
 }
@@ -74,8 +74,8 @@ res = e;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case LOEQ:
       case GREQ:
-      case 10:
-      case 11:{
+      case 11:
+      case 12:{
         ;
         break;
         }
@@ -96,14 +96,14 @@ res = new LoEq(res, e);
 res = new GrEq(res, e);
         break;
         }
-      case 10:{
-        jj_consume_token(10);
+      case 11:{
+        jj_consume_token(11);
         e = expression();
 res = new LoSt(res, e);
         break;
         }
-      case 11:{
-        jj_consume_token(11);
+      case 12:{
+        jj_consume_token(12);
         e = expression();
 res = new GrSt(res, e);
         break;
@@ -125,8 +125,8 @@ res = e;
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 12:
-      case 13:{
+      case 13:
+      case 14:{
         ;
         break;
         }
@@ -135,14 +135,14 @@ res = e;
         break label_3;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 12:{
-        jj_consume_token(12);
+      case 13:{
+        jj_consume_token(13);
         e = terme();
 res = new Plus (res, e);
         break;
         }
-      case 13:{
-        jj_consume_token(13);
+      case 14:{
+        jj_consume_token(14);
         e = terme();
 res = new Moins(res, e);
         break;
@@ -164,8 +164,8 @@ res = e;
     label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 14:
-      case 15:{
+      case 15:
+      case 16:{
         ;
         break;
         }
@@ -174,14 +174,14 @@ res = e;
         break label_4;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 14:{
-        jj_consume_token(14);
+      case 15:{
+        jj_consume_token(15);
         e = facteur();
 res = new Mult(res, e);
         break;
         }
-      case 15:{
-        jj_consume_token(15);
+      case 16:{
+        jj_consume_token(16);
         e = facteur();
 res = new Divi(res, e);
         break;
@@ -199,21 +199,21 @@ res = new Divi(res, e);
   static final public ExpressionA facteur() throws ParseException {ExpressionA e;
                 Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 16:{
-      jj_consume_token(16);
-      e = egalite();
+    case 17:{
       jj_consume_token(17);
+      e = egalite();
+      jj_consume_token(18);
 {if ("" != null) return e;}
       break;
       }
-    case 13:{
-      jj_consume_token(13);
+    case 14:{
+      jj_consume_token(14);
       e = facteur();
 {if ("" != null) return new Neg(e);}
       break;
       }
-    case 18:{
-      jj_consume_token(18);
+    case 19:{
+      jj_consume_token(19);
       e = facteur();
 {if ("" != null) return new Not(e);}
       break;
@@ -243,6 +243,11 @@ if (t.image.contains("e")) {
                         }
       break;
       }
+    case NaN:{
+      t = jj_consume_token(NaN);
+{if ("" != null) return new Num("NaN");}
+      break;
+      }
     default:
       jj_la1[7] = jj_gen;
       jj_consume_token(-1);
@@ -267,7 +272,7 @@ if (t.image.contains("e")) {
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x40,0xd80,0xd80,0x3000,0x3000,0xc000,0xc000,0x52038,};
+	   jj_la1_0 = new int[] {0x80,0x1b00,0x1b00,0x6000,0x6000,0x18000,0x18000,0xa4078,};
 	}
 
   /** Constructor with InputStream. */
@@ -413,7 +418,7 @@ if (t.image.contains("e")) {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[19];
+	 boolean[] la1tokens = new boolean[20];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -427,7 +432,7 @@ if (t.image.contains("e")) {
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 19; i++) {
+	 for (int i = 0; i < 20; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

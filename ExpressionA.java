@@ -3,4 +3,3 @@ public abstract class ExpressionA{
     public int getTaille() { return taille; }
     public abstract String toAssembly();
 }
-
