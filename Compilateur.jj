@@ -1,7 +1,6 @@
 PARSER_BEGIN(Compilateur)
 import java.io.*;
 public class Compilateur {
-
     public static void main(String args[]) {
         try {
             if (args.length > 0) {
@@ -33,7 +32,6 @@ public class Compilateur {
             System.out.println("Ceci n'est pas une expression arithmetique");
         }
     }
-
 }
 
 PARSER_END(Compilateur)
@@ -46,7 +44,7 @@ TOKEN :
     	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
    	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+ 
     	 | ["1"-"9"] (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+>
-
+	 | <NaN : "NaN">
 	  |<TRUE: "True">
 	  |<FALSE: "False">
 	  |<EQ: "==">
@@ -54,13 +52,26 @@ TOKEN :
 	  |<GREQ: ">=">
 	}
 
+
 ExpressionA mainNT () :
 	{
 		ExpressionA e;
 	}
 	{
-		(e=egalite()) ";" {return e;}
+		(e=logique()) ";" {return e;}
 	}
+
+ExpressionA logique() :
+{
+    ExpressionA res, e;
+}
+{
+    e=egalite() { res = e; }
+    (
+        "&&" e=egalite() { res = new And(res, e); }
+    )*
+    { return res; }
+}
 	
 ExpressionA egalite () :
 	{
@@ -93,6 +104,7 @@ ExpressionA comparaison () :
 		{return res;}
 	}
 
+
 ExpressionA expression () :
 	{
 	  	ExpressionA res;
@@ -124,7 +136,7 @@ ExpressionA facteur () :
 		Token t;
 	}
 	{
-		"(" (e=egalite()) ")" {return e;}
+		"(" (e=logique()) ")" {return e;}
 		| "-" (e=facteur()) {return new Neg(e);}
 		| "!" (e=facteur()) {return new Not(e);}
 		| t = <TRUE> {return new Bool("True");}
