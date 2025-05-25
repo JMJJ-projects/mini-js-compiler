@@ -75,7 +75,7 @@ ExpressionA logique() :
 	
 ExpressionA egalite () :
 	{
-	  	ExpressionA res;
+	  	ExpressionA res; 
 		ExpressionA e;
 	}
 	{

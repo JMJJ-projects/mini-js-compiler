@@ -23,5 +23,5 @@ public class Num extends ExpressionA {
       return "CstNb " + Double.toString(num);
     }
 
-}
+} 
 

@@ -13,4 +13,4 @@ public String toString() {
 
 public String toAssembly() { return arg.toAssembly() + "\nNot";}
 
-}	
+}	 
