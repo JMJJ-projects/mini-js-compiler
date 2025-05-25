@@ -9,27 +9,37 @@ public interface CompilateurConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int COMMENT = 6;
+  int COMMENT = 5;
   /** RegularExpression Id. */
-  int COMMENTMULT = 7;
+  int COMMENTMULT = 6;
   /** RegularExpression Id. */
-  int NUMBER = 8;
+  int NUMBER = 7;
   /** RegularExpression Id. */
-  int NaN = 9;
+  int NaN = 8;
   /** RegularExpression Id. */
-  int TRUE = 10;
+  int TRUE = 9;
   /** RegularExpression Id. */
-  int FALSE = 11;
+  int FALSE = 10;
   /** RegularExpression Id. */
-  int EQ = 12;
+  int EQ = 11;
   /** RegularExpression Id. */
-  int LOEQ = 13;
+  int LOEQ = 12;
   /** RegularExpression Id. */
-  int GREQ = 14;
+  int GREQ = 13;
   /** RegularExpression Id. */
-  int IMPORT = 15;
+  int IMPORT = 14;
   /** RegularExpression Id. */
-  int IDENT = 16;
+  int AND = 15;
+  /** RegularExpression Id. */
+  int IF = 16;
+  /** RegularExpression Id. */
+  int ELSE = 17;
+  /** RegularExpression Id. */
+  int DO = 18;
+  /** RegularExpression Id. */
+  int WHILE = 19;
+  /** RegularExpression Id. */
+  int IDENT = 20;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -39,7 +49,6 @@ public interface CompilateurConstants {
     "<EOF>",
     "\" \"",
     "\"\\t\"",
-    "\"\\n\"",
     "\"\\r\"",
     "\"\\r\\n\"",
     "<COMMENT>",
@@ -52,7 +61,15 @@ public interface CompilateurConstants {
     "\"<=\"",
     "\">=\"",
     "\"import\"",
+    "\"&&\"",
+    "\"if\"",
+    "\"else\"",
+    "\"do\"",
+    "\"while\"",
     "<IDENT>",
+    "\"\\n\"",
+    "\"(\"",
+    "\")\"",
     "\";\"",
     "\"<\"",
     "\">\"",
@@ -60,8 +77,6 @@ public interface CompilateurConstants {
     "\"-\"",
     "\"*\"",
     "\"/\"",
-    "\"(\"",
-    "\")\"",
     "\"!\"",
   };
 

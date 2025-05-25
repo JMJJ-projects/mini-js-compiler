@@ -1,6 +1,7 @@
 PARSER_BEGIN(Compilateur)
 import java.io.*;
 import java.io.InputStream;
+import java.util.List;
 import java.util.ArrayList;
 public class Compilateur {
 
@@ -15,8 +16,7 @@ public class Compilateur {
                 
                 BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName));
                 writer.write(i.toAssembly());
-                writer.write(" \n");
-                writer.write("Halt");
+                writer.write("\nHalt");
                 writer.close();
                 System.out.println("Output: " + outputFileName);
             } else {
@@ -38,19 +38,19 @@ public class Compilateur {
 
 }
 
+
 PARSER_END(Compilateur)
 SKIP :
 {
-    " " | "\t" | "\n" | "\r" | "\r\n"
+    " " | "\t" |"\r" | "\r\n"
 |<COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")>
 |<COMMENTMULT: "/*" (~["*"] | (("*")+ ~["/"]))* ("*")+ "/" >
 }
-
 TOKEN :
 	{ < NUMBER: ["1"-"9"] (["0"-"9"])* 
 	 |"0"
 	 |"0." (["0"-"9"])*
-    	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
+         | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
    	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+ 
     	 | ["1"-"9"] (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+>
 	 | <NaN : "NaN">
@@ -60,19 +60,52 @@ TOKEN :
 	  |<LOEQ: "<=">
 	  |<GREQ: ">=">
 	  |<IMPORT: "import">
+	  |<AND: "&&">
+	  |<IF: "if">
+	  |<ELSE: "else">
+	  |<DO: "do" >
+	  |<WHILE: "while" >
 	  |<IDENT : (["a"-"z", "A"-"Z", "_"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])*>
 	}
 
+	
 ExpressionA mainNT () :
 	{
 		ExpressionA e;
-		Token t;
+		List<ExpressionA> exprs = new ArrayList<>();
 	}
 	{
-		    (e=egalite()) ";" {return e;}
-		    | <IMPORT> t = <IDENT> {return new Import(t.image);}
+		(e=command() { exprs.add(e); } )+ "\n"
+    		{ return exprs.size() == 1 ? e : new Sequence(exprs); }
+
 	}
 	
+ExpressionA command () :
+{
+	ExpressionA e, thenCmd, elseCmd, body, cond;
+	Token t;
+}
+{
+	<IF> "(" e=logique() ")" thenCmd=command() <ELSE> elseCmd=command() { return new IfElse(e, thenCmd, elseCmd); }
+    	|<DO> body=command() <WHILE> "(" cond=logique() ")" ";" { return new DoWhile(body, cond); }
+	| e=logique() ";" { return e; }
+	| ";" { return new Empty(); }
+	|<IMPORT> t = <IDENT> {return new Import(t.image);}
+
+}
+
+ExpressionA logique() :
+{
+    ExpressionA res, e;
+}
+{
+    e=egalite() { res = e; }
+    (
+        "&&" e=egalite() { res = new And(res, e); }
+    )*
+    { return res; }
+}
+
 ExpressionA egalite () :
 	{
 	  	ExpressionA res;
@@ -103,7 +136,6 @@ ExpressionA comparaison () :
 		)*
 		{return res;}
 	}
-
 
 ExpressionA expression () :
 	{

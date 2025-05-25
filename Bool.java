@@ -3,6 +3,7 @@ public class Bool extends ExpressionA {
     
   public Bool(String bool) {
     this.bool = bool;
+    this.taille = 1; 
   }
   
   public String toString() {

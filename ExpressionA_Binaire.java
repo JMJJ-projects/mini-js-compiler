@@ -1,12 +1,13 @@
 // non disponible hors du package (non publique).
 // Permet uniquement de factoriser le code des noeuds binaires.
-abstract class ExpressionA_Binaire extends ExpressionA {
+public abstract class ExpressionA_Binaire extends ExpressionA {
   ExpressionA gauche;
   ExpressionA droite;
 
   ExpressionA_Binaire (ExpressionA gauche,ExpressionA droite) {
     this.gauche = gauche;
     this.droite = droite;
+    this.taille = gauche.getTaille() + droite.getTaille() + 1;
   }
 
   abstract String symbole(); 

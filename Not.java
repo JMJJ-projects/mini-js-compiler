@@ -4,6 +4,7 @@ public ExpressionA arg;
 
 public Not(ExpressionA arg) {
   this.arg = arg;
+  this.taille = this.taille + 1;
 }
 
 public String toString() {
@@ -12,4 +13,4 @@ public String toString() {
 
 public String toAssembly() { return arg.toAssembly() + "\nNot";}
 
-}	
+}	 
