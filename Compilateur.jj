@@ -1,6 +1,9 @@
 PARSER_BEGIN(Compilateur)
 import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
 public class Compilateur {
+
     public static void main(String args[]) {
         try {
             if (args.length > 0) {
@@ -12,7 +15,6 @@ public class Compilateur {
                 
                 BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName));
                 writer.write(i.toAssembly());
-                writer.write(" \n");
                 writer.write("Halt");
                 writer.close();
                 System.out.println("Output: " + outputFileName);
@@ -32,6 +34,7 @@ public class Compilateur {
             System.out.println("Ceci n'est pas une expression arithmetique");
         }
     }
+
 }
 
 PARSER_END(Compilateur)
@@ -41,29 +44,57 @@ SKIP :
 |<COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")>
 |<COMMENTMULT: "/*" (~["*"] | (("*")+ ~["/"]))* ("*")+ "/" >
 }
+	
 TOKEN :
 	{ < NUMBER: ["1"-"9"] (["0"-"9"])* 
 	 |"0"
 	 |"0." (["0"-"9"])*
-    	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
+     | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])*
    	 | ["1"-"9"] (["0"-"9"])* "." (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+ 
-    	 | ["1"-"9"] (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+>
-	 | <NaN : "NaN">
-	  |<TRUE: "True">
-	  |<FALSE: "False">
-	  |<EQ: "==">
-	  |<LOEQ: "<=">
-	  |<GREQ: ">=">
+     | ["1"-"9"] (["0"-"9"])* "e" ("-"|"+")? (["0"-"9"])+>
+
+	 |<TRUE: "True">
+	 |<FALSE: "False">
+	 |<EQ: "==">
+	 |<LOEQ: "<=">
+	 |<GREQ: ">=">
+	 |<AND: "&&">
+	 |<IF: "if">
+	 |<ELSE: "else">
+	 |<DO: "do" >
+	 |<WHILE: "while" >
 	}
 
+ExpressionA mainNT() :
+{
+    List<ExpressionA> exprs = new ArrayList<>();
+    ExpressionA e;
+}
+{
+    (e=command() { exprs.add(e); } )+
+    { return exprs.size() == 1 ? e : new Sequence(exprs); }
+}
 
-ExpressionA mainNT () :
-	{
-		ExpressionA e;
-	}
-	{
-		(e=logique()) ";" {return e;}
-	}
+ExpressionA command() :
+{
+    ExpressionA e, thenCmd, elseCmd, body, cond;
+}
+{
+	<IF> "(" e=logique() ")" thenCmd=block() <ELSE> elseCmd=block() { return new IfElse(e, thenCmd, elseCmd); }
+    |<DO> body=block() <WHILE> "(" cond=logique() ")" ";" { return new DoWhile(body, cond); }
+	| e=logique() ";" { return e; }
+	| ";" { return new Empty(); }
+}
+
+ExpressionA block() :
+{
+    List<ExpressionA> exprs = new ArrayList<>();
+    ExpressionA e;
+}
+{
+    "{"  (e=command() { exprs.add(e); })* "}" { return exprs.isEmpty() ? new Sequence(new ArrayList<>()) : exprs.size() == 1 ? exprs.get(0) : new Sequence(exprs); }
+  | (e=command()) { exprs.add(e); } { return e; }
+}
 
 ExpressionA logique() :
 {
@@ -76,10 +107,10 @@ ExpressionA logique() :
     )*
     { return res; }
 }
-	
+
 ExpressionA egalite () :
 	{
-	  	ExpressionA res; 
+	  	ExpressionA res;
 		ExpressionA e;
 	}
 	{
@@ -107,7 +138,6 @@ ExpressionA comparaison () :
 		)*
 		{return res;}
 	}
-
 
 ExpressionA expression () :
 	{
@@ -140,7 +170,7 @@ ExpressionA facteur () :
 		Token t;
 	}
 	{
-		"(" (e=logique()) ")" {return e;}
+		"(" (e=egalite()) ")" {return e;}
 		| "-" (e=facteur()) {return new Neg(e);}
 		| "!" (e=facteur()) {return new Not(e);}
 		| t = <TRUE> {return new Bool("True");}
@@ -156,5 +186,4 @@ ExpressionA facteur () :
 				}
 				else {return new Num(Double.parseDouble(t.image));}
 			}}
-		|t=<NaN> {return new Num("NaN");}
 	}
