@@ -12,7 +12,9 @@ public class Sequence extends ExpressionA {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < expressions.size(); i++) {
             sb.append(expressions.get(i).toAssembly());
-            sb.append("\n");
+            if ((i < expressions.size() - 1)) {
+                sb.append("\n");
+            }
         }
         return sb.toString();
     }

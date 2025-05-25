@@ -9,9 +9,16 @@ public class And extends ExpressionA {
     
     @Override
     public String toAssembly() {
+    	String notempty;
+    	if(droite.getTaille() == 0) {
+    		notempty = "";
+    	}
+    	else {
+    		notempty = "\n" + droite.toAssembly();
+    	}
         return gauche.toAssembly() 
             + "\nConJmp " + (droite.getTaille() + 2)
-            + "\n" + droite.toAssembly() 
+            + notempty
             + "\nJump 1"
             + "\nCsteBo 0";
     }

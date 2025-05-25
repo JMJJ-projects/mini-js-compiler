@@ -9,19 +9,31 @@ public interface CompilateurConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int NUMBER = 3;
+  int COMMENT = 6;
   /** RegularExpression Id. */
-  int NaN = 4;
+  int COMMENTMULT = 7;
   /** RegularExpression Id. */
-  int TRUE = 5;
+  int NUMBER = 8;
   /** RegularExpression Id. */
-  int FALSE = 6;
+  int TRUE = 9;
   /** RegularExpression Id. */
-  int EQ = 7;
+  int FALSE = 10;
   /** RegularExpression Id. */
-  int LOEQ = 8;
+  int EQ = 11;
   /** RegularExpression Id. */
-  int GREQ = 9;
+  int LOEQ = 12;
+  /** RegularExpression Id. */
+  int GREQ = 13;
+  /** RegularExpression Id. */
+  int AND = 14;
+  /** RegularExpression Id. */
+  int IF = 15;
+  /** RegularExpression Id. */
+  int ELSE = 16;
+  /** RegularExpression Id. */
+  int DO = 17;
+  /** RegularExpression Id. */
+  int WHILE = 18;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -31,22 +43,33 @@ public interface CompilateurConstants {
     "<EOF>",
     "\" \"",
     "\"\\t\"",
+    "\"\\n\"",
+    "\"\\r\"",
+    "\"\\r\\n\"",
+    "<COMMENT>",
+    "<COMMENTMULT>",
     "<NUMBER>",
-    "\"NaN\"",
     "\"True\"",
     "\"False\"",
     "\"==\"",
     "\"<=\"",
     "\">=\"",
+    "\"&&\"",
+    "\"if\"",
+    "\"else\"",
+    "\"do\"",
+    "\"while\"",
+    "\"(\"",
+    "\")\"",
     "\";\"",
+    "\"{\"",
+    "\"}\"",
     "\"<\"",
     "\">\"",
     "\"+\"",
     "\"-\"",
     "\"*\"",
     "\"/\"",
-    "\"(\"",
-    "\")\"",
     "\"!\"",
   };
 

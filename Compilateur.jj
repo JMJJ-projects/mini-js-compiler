@@ -14,8 +14,14 @@ public class Compilateur {
                 ExpressionA i = parseur.mainNT();
                 
                 BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName));
-                writer.write(i.toAssembly());
-                writer.write("Halt");
+                String assemblyCode = i.toAssembly();   
+				if (!assemblyCode.isEmpty()) {
+    				writer.write(assemblyCode);
+    				if (!assemblyCode.endsWith("\n")) {
+        				writer.write("\n");
+    				}
+				}
+				writer.write("Halt");
                 writer.close();
                 System.out.println("Output: " + outputFileName);
             } else {
