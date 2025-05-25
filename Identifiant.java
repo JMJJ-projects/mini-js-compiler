@@ -5,6 +5,10 @@ public class Identifiant extends ExpressionA {
     this.id = id;
   }
   
+  public ExpressionA simplifie() {
+      return this;
+    }
+  
   public String toString() {
     return this.id;
   }

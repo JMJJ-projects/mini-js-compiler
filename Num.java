@@ -12,6 +12,10 @@ public class Num extends ExpressionA {
       this.nan = nan;
       this.taille = 1;
     }
+    
+    public ExpressionA simplifie() {
+      return this;
+    }
   
   public String toString() {
     if(this.nan == "NaN")

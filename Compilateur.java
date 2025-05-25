@@ -37,7 +37,7 @@ public class Compilateur implements CompilateurConstants {
         }
     }
 
-  static final public ExpressionA mainNT() throws ParseException {ExpressionA e;
+  static final public ExpressionA mainNT() throws ParseException {ExpressionA e, res;
                 List<ExpressionA> exprs = new ArrayList<>();
     label_1:
     while (true) {
@@ -65,7 +65,7 @@ exprs.add(e);
       }
     }
     jj_consume_token(22);
-{if ("" != null) return exprs.size() == 1 ? e : new Sequence(exprs);}
+res = exprs.size() == 1 ? e : new Sequence(exprs); {if ("" != null) return res.simplifie();}
     throw new Error("Missing return statement in function");
 }
 
@@ -99,7 +99,7 @@ exprs.add(e);
       if (jj_2_1(2)) {
         t = jj_consume_token(IDENT);
         jj_consume_token(AFFECTATION);
-        e = logique();
+        e = multi_affectation();
         jj_consume_token(25);
 {if ("" != null) return new SetVar(t.image, e);}
       } else {
@@ -197,12 +197,18 @@ exprs.add(e);
     throw new Error("Missing return statement in function");
 }
 
+  static final public ExpressionA multi_affectation() throws ParseException {ExpressionA e;
+    e = affectation();
+{if ("" != null) return e;}
+    throw new Error("Missing return statement in function");
+}
+
   static final public ExpressionA affectation() throws ParseException {ExpressionA e;
     Token t;
     if (jj_2_2(2)) {
       t = jj_consume_token(IDENT);
       jj_consume_token(AFFECTATION);
-      e = logique();
+      e = multi_affectation();
 {if ("" != null) return new SetVar(t.image, e);}
     } else {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -408,7 +414,7 @@ res = new Divi(res, e);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case 23:{
       jj_consume_token(23);
-      e = affectation();
+      e = multi_affectation();
       jj_consume_token(24);
 {if ("" != null) return e;}
       break;

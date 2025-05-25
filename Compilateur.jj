@@ -72,12 +72,12 @@ TOKEN :
 	
 ExpressionA mainNT () :
 	{
-		ExpressionA e;
+		ExpressionA e, res;
 		List<ExpressionA> exprs = new ArrayList<>();
 	}
 	{
 		(e=command() { exprs.add(e); } )+ "\n"
-    		{ return exprs.size() == 1 ? e : new Sequence(exprs); }
+    		{ res = exprs.size() == 1 ? e : new Sequence(exprs); return res.simplifie(); }
 
 	}
 	
@@ -89,7 +89,7 @@ ExpressionA command () :
 {
 	<IF> "(" e=logique() ")" thenCmd=block() <ELSE> elseCmd=block() { return new IfElse(e, thenCmd, elseCmd); }
     	|<DO> body=block() <WHILE> "(" cond=logique() ")" ";" { return new DoWhile(body, cond); }
-	| LOOKAHEAD(2) t=<IDENT> <AFFECTATION> e=logique() ";" {return new SetVar(t.image, e);}
+	| LOOKAHEAD(2) t=<IDENT> <AFFECTATION> e=multi_affectation() ";" {return new SetVar(t.image, e);}
 	| e=logique() ";" { return e; }
 	| ";" { return new Empty(); }
 	|<IMPORT> t = <IDENT> {return new Import(t.image);}
@@ -106,15 +106,23 @@ ExpressionA block() :
   | (e=command()) { exprs.add(e); } { return e; }
 }
 
+ExpressionA multi_affectation() :
+{
+	ExpressionA e;
+}
+{
+	e=affectation() {return e;}
+}
 ExpressionA affectation() :
 {
     ExpressionA e;
     Token t;
 }
 {
-    LOOKAHEAD(2) t=<IDENT> <AFFECTATION> e=logique() {return new SetVar(t.image, e);}
+    LOOKAHEAD(2) t=<IDENT> <AFFECTATION> e=multi_affectation() {return new SetVar(t.image, e);}
     |e=logique() {return e;}
 }
+
 
 ExpressionA logique() :
 {
@@ -127,7 +135,7 @@ ExpressionA logique() :
     )*
     { return res; }
 }
-
+	
 ExpressionA egalite () :
 	{
 	  	ExpressionA res;
@@ -190,7 +198,7 @@ ExpressionA facteur () :
 		Token t;
 	}
 	{
-		"(" (e=affectation()) ")" {return e;}
+		"(" (e=multi_affectation()) ")" {return e;}
 		| "-" (e=facteur()) {return new Neg(e);}
 		| "!" (e=facteur()) {return new Not(e);}
 		| t = <TRUE> {return new Bool("True");}
@@ -208,4 +216,6 @@ ExpressionA facteur () :
 			}}
 		|t=<NaN> {return new Num("NaN");}
 		|t=<IDENT> {return new Identifiant(t.image);}
+
 	}
+

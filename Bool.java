@@ -6,6 +6,10 @@ public class Bool extends ExpressionA {
     this.taille = 1; 
   }
   
+  public ExpressionA simplifie() {
+      return this;
+    }
+  
   public String toString() {
     return this.bool;
   }

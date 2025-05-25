@@ -12,6 +12,10 @@ public class Import extends ExpressionA {
     this.id = id;
   }
   
+  public ExpressionA simplifie() {
+      return this;
+    }
+  
   public String toString() {
     return "import " + this.id; 
   }
