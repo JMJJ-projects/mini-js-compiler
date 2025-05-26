@@ -7,6 +7,17 @@ public Not(ExpressionA arg) {
   this.taille = this.taille + 1;
 }
 
+public ExpressionA simplifie() {
+      ExpressionA a = arg.simplifie();
+      if(a instanceof Bool)
+      {
+        Bool a_bool = (Bool) a;
+        return new Bool(a_bool.bool=="False" ? "True" : "False");
+      }
+      
+      return new Not(a);
+    }
+
 public String toString() {
   return String.format("Not(%1$s)", arg.toString());
 }

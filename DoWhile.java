@@ -8,6 +8,20 @@ public class DoWhile extends ExpressionA {
         this.taille = body.getTaille() + condition.getTaille() + 2;
     }
     
+    public ExpressionA simplifie() {
+      ExpressionA b = body.simplifie();
+      ExpressionA c = condition.simplifie();
+      if(c instanceof Bool)
+      {
+        Bool c_bool = (Bool) c;
+        if(c_bool.bool=="False")
+        {
+          return b;
+        }
+      }
+      return new DoWhile(b, c);
+    }
+
     @Override
     public String toAssembly() {
         int bodySize = body.getTaille();

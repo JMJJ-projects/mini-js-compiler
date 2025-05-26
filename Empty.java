@@ -3,6 +3,10 @@ public class Empty extends ExpressionA {
         this.taille = 0;
     }
     
+    public ExpressionA simplifie() {
+      return this;
+    }
+    
     @Override
     public String toAssembly() {
         return "";

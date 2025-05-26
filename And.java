@@ -6,6 +6,24 @@ public class And extends ExpressionA {
         this.droite = droite;
         this.taille = gauche.getTaille() + droite.getTaille() + 3;
     }
+
+    
+    public ExpressionA simplifie() {
+      ExpressionA g = gauche.simplifie();
+      ExpressionA d = droite.simplifie();
+      if(g instanceof Bool && d instanceof Bool)
+      {
+        Bool g_bool = (Bool) g;
+        Bool d_bool = (Bool) d;
+        if(g_bool.bool=="False" || d_bool.bool=="False")
+        {
+          return new Bool("False");
+        }
+        return new Bool("True");
+      }
+      
+      return new And(g, d);
+    }
     
     @Override
     public String toAssembly() {
@@ -16,10 +34,10 @@ public class And extends ExpressionA {
     	else {
     		notempty = "\n" + droite.toAssembly();
     	}
-        return gauche.toAssembly() 
+        return gauche.toAssembly()
             + "\nConJmp " + (droite.getTaille() + 2)
             + notempty
             + "\nJump 1"
-            + "\nCsteBo 0";
+            + "\nCsteBo False";
     }
 }

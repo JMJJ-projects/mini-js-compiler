@@ -10,6 +10,22 @@ public class IfElse extends ExpressionA {
         this.taille = condition.getTaille() + thenBlock.getTaille() + elseBlock.getTaille() + 2;
     }
     
+     public ExpressionA simplifie() {
+      ExpressionA cond = condition.simplifie();
+      ExpressionA then = thenBlock.simplifie();
+      ExpressionA else_ = elseBlock.simplifie();
+      if(cond instanceof Bool)
+      {
+        Bool c_bool = (Bool) cond;
+        if(c_bool.bool=="True")
+        {
+          return then;
+        }
+        return else_;
+      }
+      return new IfElse(cond, then, else_);
+    }
+    
     @Override
     public String toAssembly() {
     	String notempty;

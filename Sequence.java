@@ -7,6 +7,10 @@ public class Sequence extends ExpressionA {
         this.taille = expressions.stream().mapToInt(ExpressionA::getTaille).sum();
     }
     
+    public ExpressionA simplifie() {
+      return this;
+    }
+    
     @Override
     public String toAssembly() {
         StringBuilder sb = new StringBuilder();
