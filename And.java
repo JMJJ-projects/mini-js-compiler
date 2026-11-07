@@ -38,6 +38,6 @@ public class And extends ExpressionA {
             + "\nConJmp " + (droite.getTaille() + 2)
             + notempty
             + "\nJump 1"
-            + "\nCsteBo False";
+            + "\nCstBo False";
     }
 }

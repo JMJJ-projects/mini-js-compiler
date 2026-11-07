@@ -22,7 +22,7 @@ public ExpressionA simplifie() {
       return new Moins(g, d);
     }
 
-public String toAssembly() {return gauche.toAssembly() + "\n" + droite.toAssembly() + "\nSubiNb";}
+public String toAssembly() {return gauche.toAssembly() + "\n" + droite.toAssembly() + "\nSubsNb";}
 
 
 }

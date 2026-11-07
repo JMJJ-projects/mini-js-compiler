@@ -3,6 +3,7 @@ public class Identifiant extends ExpressionA {
     
   public Identifiant(String id) {
     this.id = id;
+    this.taille = 1; // GetVar
   }
   
   public ExpressionA simplifie() {

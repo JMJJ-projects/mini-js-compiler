@@ -4,6 +4,7 @@ public ExpressionA arg;
 
 public Neg(ExpressionA arg) {
   this.arg = arg;
+  this.taille = arg.getTaille() + 1; // arg + NegaNb
 }
 
 public ExpressionA simplifie() {

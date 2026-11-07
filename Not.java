@@ -4,7 +4,7 @@ public ExpressionA arg;
 
 public Not(ExpressionA arg) {
   this.arg = arg;
-  this.taille = this.taille + 1;
+  this.taille = arg.getTaille() + 1; // arg + Not
 }
 
 public ExpressionA simplifie() {

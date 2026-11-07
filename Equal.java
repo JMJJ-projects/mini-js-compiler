@@ -29,7 +29,7 @@ public ExpressionA simplifie() {
       return new Equal(g, d);
     }
 
-public String toAssembly() {return gauche.toAssembly() + "\n" + droite.toAssembly() + "\nEqual";}
+public String toAssembly() {return gauche.toAssembly() + "\n" + droite.toAssembly() + "\nEquals";}
 
 }
 

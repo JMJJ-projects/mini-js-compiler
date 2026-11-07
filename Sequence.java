@@ -8,7 +8,11 @@ public class Sequence extends ExpressionA {
     }
     
     public ExpressionA simplifie() {
-      return this;
+      List<ExpressionA> simplified = new java.util.ArrayList<>();
+      for (ExpressionA e : expressions) {
+        simplified.add(e.simplifie());
+      }
+      return new Sequence(simplified);
     }
     
     @Override

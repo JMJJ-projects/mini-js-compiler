@@ -21,7 +21,7 @@ public ExpressionA simplifie() {
     
 public String symbole() {return "SupSt";}; 
 
-public String toAssembly() {return gauche.toAssembly() + "\n" + droite.toAssembly() + "\nGrStsNb";}
+public String toAssembly() {return gauche.toAssembly() + "\n" + droite.toAssembly() + "\nGrStNb";}
 
 }
 
