@@ -15,14 +15,8 @@ public class Compilateur {
                 ExpressionA i = parseur.mainNT();
                 
                 BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName));
-                String assemblyCode = i.toAssembly();   
-				if (!assemblyCode.isEmpty()) {
-    				writer.write(assemblyCode);
-    				if (!assemblyCode.endsWith("\n")) {
-        				writer.write("\n");
-    				}
-				}
-				writer.write("Halt");
+                writer.write(i.toAssembly());
+                writer.write("\nHalt");
                 writer.close();
                 System.out.println("Output: " + outputFileName);
             } else {
@@ -36,9 +30,11 @@ public class Compilateur {
         } catch (IOException e) {
             System.out.println("Erreur");
         } catch (TokenMgrError e) {
-            System.out.println("Ceci n'est pas une expression arithmetique");
+            System.err.println("Erreur lexicale : " + e.getMessage());
+            System.exit(1);
         } catch (ParseException e) {
-            System.out.println("Ceci n'est pas une expression arithmetique");
+            System.err.println("Erreur de syntaxe : " + e.getMessage());
+            System.exit(1);
         }
     }
 
@@ -48,8 +44,8 @@ public class Compilateur {
 PARSER_END(Compilateur)
 SKIP :
 {
-    " " | "\t" |"\r" | "\r\n"
-|<COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")>
+    " " | "\t" | "\r" | "\n"
+|<COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")?>
 |<COMMENTMULT: "/*" (~["*"] | (("*")+ ~["/"]))* ("*")+ "/" >
 }
 TOKEN :
@@ -71,6 +67,7 @@ TOKEN :
 	  |<ELSE: "else">
 	  |<DO: "do" >
 	  |<WHILE: "while" >
+	  |<PRINT: "print" >
 	  |<AFFECTATION: "=">
 	  |<IDENT : (["a"-"z", "A"-"Z", "_"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])*>
 	}
@@ -82,7 +79,7 @@ ExpressionA mainNT () :
 		List<ExpressionA> exprs = new ArrayList<>();
 	}
 	{
-		(e=command() { exprs.add(e); } )+ "\n"
+		(e=command() { exprs.add(e); } )+ <EOF>
     		{ res = exprs.size() == 1 ? e : new Sequence(exprs); return res.simplifie(); }
 
 	}
@@ -96,7 +93,8 @@ ExpressionA command () :
 	<IF> "(" e=logique() ")" thenCmd=block() <ELSE> elseCmd=block() { return new IfElse(e, thenCmd, elseCmd); }
     	|<DO> body=block() <WHILE> "(" cond=logique() ")" ";" { return new DoWhile(body, cond); }
 	| LOOKAHEAD(2) t=<IDENT> <AFFECTATION> e=multi_affectation() ";" {return new SetVar(t.image, e);}
-	| e=logique() ";" { return e; }
+	| <PRINT> "(" e=multi_affectation() ")" ";" { return new Print(e); }
+	| e=logique() ";" { return new Discard(e); }
 	| ";" { return new Empty(); }
 	|<IMPORT> t = <IDENT> {return new Import(t.image);}
 
